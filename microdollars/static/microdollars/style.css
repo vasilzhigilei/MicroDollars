@@ -1,0 +1,127 @@
+html,
+body {
+    background: #ebf2f8;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.bg-darkblue {
+    background-color: #34495E;
+}
+
+.bg-darkerlight {
+    background-color: #e9ecef;
+}
+
+.text-darkerlight {
+    color: #e9ecef;
+}
+
+.rounded {
+    border-radius: 7px;
+}
+
+.textright {
+    text-align: right;
+}
+
+.shiftdown {
+    margin-top: 6px;
+}
+
+.nomargin {
+    margin: 0 !important;
+}
+
+.padding {
+    padding: 15px;
+}
+
+.center {
+    margin: auto;
+}
+
+/* spacer to push footer to bottom of page if page too short */
+.spacer {
+    flex: 1;
+}
+
+footer {
+    width: 100%;
+}
+
+.orglist {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.orgcard-outer {
+    width: 23%;
+    margin: 1%;
+}
+
+.orgcard-inner {
+    min-height: 28vh;
+    color: whitesmoke;
+    background-color: #34495E;
+    padding: 4px;
+    text-align: center;
+    transition: background 0.2s ease-in-out;
+    position: relative;
+    z-index: 5;
+    text-shadow: 1px 1px 5px rgba(56, 56, 56, 0.5), 1px 1px 5px rgba(56, 56, 56, .5);
+}
+
+.orgcard-bg {
+    z-index: -1;
+    opacity: .1;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: auto 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    ;
+}
+
+.orgcard-img {
+    margin-bottom: 6px;
+    min-height: 50px;
+    max-height: 10vh;
+    max-width: 100%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.orgcard-inner:hover {
+    background-color: #47627e;
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+.error {
+    font-weight: bold;
+}
+
+.forminput {
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.levelsDescription-table {
+    table-layout: fixed;
+    width: 50%;
+    margin: auto;
+}
+
+.levelsDescription-amountcolumn {
+    text-align: right;
+    vertical-align: middle;
+}

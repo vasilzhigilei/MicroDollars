@@ -1,0 +1,14 @@
+language: python
+python:
+- '3.8'
+install:
+- pip install -r requirements-travis.txt
+script:
+- python manage.py test
+deploy:
+  provider: heroku
+  api_key:
+    secure: lC0F8Oesm/jxGHHHfEFNwh7gjN7BM5iIV3xkjS5htUWjcpnKcy/o8Oe2gwHzs2dA9WLpxpkwRi7dnrTb2rYRmEIgAtAaG3CXPUI9NCtV92h+HRCQFG0Ui986XrFkm3H6pcjCGL63a82L9nE6fFYJ4eiEFzdyee/GbPrzW+m6hpkTeUZ1TzqBOw+qoYes0DPRPLb33+UZTpZ433aPrLmJCIjCF2/I1WARpYTQhUbcdi1RIa6SWOlPdew9J4YQNXXvdhBst+WxqrckpkbqUKlUqNq0EtP6u4MRBDOXvi5LE2BdvxVLLue3kxkMo3/Zd9Xf5nU9dKZAYgPN+iGMbtgx2/1VXWWNNRZo+mWnw7LCq/w2Y6/jw9A89kzrcBuXFv3NsaMeZEcSHAq8kkEEDtOe9odF5/RLpxP4GOI1Q/n14jkXY3yhhsBPdb/wSAEmwf3DPfFxhQI98yaD/kocvMbB9xdBFdJXAYiXN4Gv1IsUqWje91YEgi6kCHNT9KqYzDwFTJk2pMBHtc15V72p2ZGXASjV9ISRpD1GW4zMV2w+xSsU8ZjEHAH4PJHF6g9CS1rHY/hk7jrAjuWPW36BWLKiELZFs1oeJscMLgFj59SUs2KYv3mpr2xTKBQoxsalMBd+jCoSjnvtrBCZn+29yeV9066g8Zi88bLTJd5IFBFT0hQ=
+  app: cs3240-2jv
+  on:
+    repo: uva-cs3240-f20/project-1-38

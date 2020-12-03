@@ -1,0 +1,259 @@
+{% comment %}
+/***************************************************************************************
+*  REFERENCES
+*  Title: In 5 mins: Set up Google login to sign up users on Django
+*  Author: Zoe Chew
+*  Date: 7/27/19
+*  Code version: n/a
+*  URL: https://medium.com/@whizzoe/in-5-mins-set-up-google-login-to-sign-up-users-on-django-e71d5c38f5d5
+*  Software License: Not released under license, part of tutorial
+*
+***************************************************************************************/
+{% endcomment %}
+{% comment %}
+/***************************************************************************************
+*  REFERENCES
+*  Title: PayPal Checkout Integration Guide
+*  Author: PayPal
+*  Date: 2020
+*  Code version: n/a
+*  URL: https://developer.paypal.com/docs/archive/checkout/integrate/
+*  Software License: Not released under license, part of tutorial
+*
+***************************************************************************************/
+{% endcomment %}
+{% load socialaccount %}
+<html>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>MicroDollars</title>
+
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'microdollars/style.css' %}">
+    <!-- favicon.ico -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'microdollars/favicon.ico' %}"/>
+
+    <!-- JS, Popper.js, and jQuery for Bootstrap-->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    
+    <script src="https://www.paypal.com/sdk/js?client-id=AWylIyJKwiuyxCjW6IY-eF0WTFG_IWCBGJXxUhBtV351q8tz7KgLUoGy6rKt73Y5PY9t1UYCcekVf_lz"></script>
+
+  </head>
+  <body class="bg-darkerlight">
+    <!-- START HEADER -->
+    <!-- First navbar row -->
+    <div class="navbar navbar-default navbar-expand-md navbar-light bg-darkerlight">
+      <div class="container">
+        <a href="#" class="h1 navbar-brand nomargin">MicroDollars</a>
+        {% if user.is_authenticated %}
+          <!-- Sign out button -->
+          <a class="btn btn-outline-danger pull-right" role="button" href="/accounts/logout/">Logout</a>
+        {% else %}
+          <!-- Log in/Sign up button -->
+          <a class="btn btn-outline-success pull-right" role="button" href="{% provider_login_url 'google' %}">Log in/Sign up with Google</a>
+        {% endif %}
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+    </div>
+    <!-- Second navbar row -->
+    <div class="navbar navbar-default navbar-expand-md navbar-dark bg-success">
+      <div class="container">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/lookup">User Lookup</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/leaderboard">Leaderboard</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="/profile">My Profile</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="navbar navbar-expand-md bg-light">
+      <div class="container">
+        {% if user.is_authenticated %}
+        <p id="username" class="h1 navbar-brand nomargin">Welcome, {{ user.username }}! {{ banner.text|safe }}</p>
+        {% else %}
+        <p id="username" class="h1 navbar-brand nomargin">Not Logged In</p>
+        {% endif %}
+      </div>
+    </div>
+    <!-- STOP HEADER -->
+
+    <!-- START PAGE CONTENT -->
+    <div id="maincontent" class="container">
+
+      <br>
+      <div class="row">
+        <div class="col-md-12 bg-light padding rounded orglist">
+            {% for org in organizations %}
+              <div class="orgcard-outer">
+                <div class="orgcard-inner" id="{{ org.organization_name }}" onclick="changeOrgDropdown(this)"> <!-- background org image -->
+                  <div class="orgcard-bg" style="background-image: url({{ org.image.url }});"></div>
+                  <img class="orgcard-img" src="{{ org.image.url }}">
+                  <h3 style="text-align: center;">{{ org.organization_name }}</h3>
+                  <h6 style="padding: 4px;">{{ org.about_me }}</h6>
+                </div>
+              </div>
+            {% endfor %}
+
+        </div>
+      </div>
+
+      <br>
+      <div class="row">
+        <div class="col-md-12 bg-light padding rounded">
+          <div class="row justify-content-center">
+            <div class="col-sm-12 col-md-8">
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{message}}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+              {{ message|safe }}
+              <form id="donationform" method="POST">
+                <div id="empty_error" class="hidden alert alert-danger">Amount can't be empty!</div>
+                <div id="amount_error" class="hidden alert alert-danger">Amount must be positive!</div>
+                <div id="decimal_error" class="hidden alert alert-danger">Too many decimals! Please limit to 1 cent increments.</div>
+                {% csrf_token %}
+                {{ form }}
+              </form>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-sm-12 col-md-8 col-lg-4">
+              <div id="paypal-button-container"></div>
+            </div>
+          </div>
+          <script>
+              function getDecimals(val) {
+                var text = val.toString();
+                var index = text.indexOf(".");
+                var decimals = 0;
+                if(index != -1){
+                  decimals = text.length - index - 1;
+                }
+                else{
+                  decimals = 0;
+                }
+                console.log(decimals)
+                return decimals
+              }
+              paypal.Buttons({
+                fundingSource: paypal.FUNDING.PAYPAL,
+                style: {
+                  layout:  'horizontal'
+                },
+                onInit: function(data, actions) {
+                  // Disable the buttons
+                  actions.disable();
+                  console.log("init!")
+                  // Listen for changes to the checkbox
+                  document.querySelector('#id_amount')
+                    .addEventListener('input', function(event) {
+                      // Enable or disable the button when it is checked or unchecked
+                      console.log("listening")
+                      console.log(getDecimals(event.target.value))
+                      if (event.target.value > 0 && getDecimals(event.target.value) <= 2) {
+                        console.log("enabled")
+                        actions.enable();
+                      } else {
+                        actions.disable();
+                      }
+                    });
+                },
+                onClick: function() {
+                  var amount = document.querySelector('#id_amount').value
+
+                  document.querySelector('#empty_error').classList.add('hidden');
+                  document.querySelector('#amount_error').classList.add('hidden');
+                  document.querySelector('#decimal_error').classList.add('hidden');
+
+                  if(amount == "") {
+                    document.querySelector('#empty_error').classList.remove('hidden');
+                  }
+                  else{
+                    if (amount <= 0) {
+                    document.querySelector('#amount_error').classList.remove('hidden');
+                    }
+                    if (amount != ""  && getDecimals(amount) > 2) {
+                      document.querySelector('#decimal_error').classList.remove('hidden');
+                    }
+                  }
+                },
+                createOrder: function(data, actions) {
+                  // This function sets up the details of the transaction, including the amount and line item details.
+                  return actions.order.create({
+                    purchase_units: [{
+                      amount: {
+                        value: document.getElementById("id_amount").value
+                      }
+                    }],
+                    application_context: {
+                      shipping_preference: "NO_SHIPPING",
+                    },
+                  });
+                },
+                onApprove: function(data, actions) {
+                  // This function captures the funds from the transaction.
+                  return actions.order.capture().then(function(details) {
+                    // This function shows a transaction success message to your buyer.
+                    document.getElementById("donationform").submit();
+                  });
+                }
+              }).render('#paypal-button-container');
+              // This function displays Smart Payment Buttons on your web page.
+          </script>
+        </div>
+      </div>
+      <br>
+    </div>
+    <!-- STOP PAGE CONTENT -->
+
+    <!-- START FOOTER -->
+    <div class="spacer"></div>
+    <footer class="font-small bg-darkblue text-darkerlight">
+      <div class="footer-copyright text-center py-3">
+        2020
+        <b>2JV Team</b> (John Kim, Jami Park, Vinay Garimella, Vasil Zhigilei)
+      </div>
+    </footer>
+    <!-- STOP FOOTER -->
+
+    <script>
+      function changeOrgDropdown(div) {
+        var id = div.id; // get org name from clicked card id
+        var dropdown = document.getElementById("id_donateto") // get dropdown
+        var optionsLength = dropdown.options.length;
+        for (var i = 0; i < optionsLength; i++){
+          if (dropdown.options[i].text == id){
+            dropdown.options[i].selected = true;
+            break;
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
