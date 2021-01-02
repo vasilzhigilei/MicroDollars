@@ -42,7 +42,7 @@ SECRET_KEY = os.getenv('SECRET_3240')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://cs3240-2jv.herokuapp.com/', 'https://microdollars.herokuapp.com/']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://cs3240-2jv.herokuapp.com/', 'https://microdollars.herokuapp.com/', '.herokuapp.com']
 
 
 # Application definition
